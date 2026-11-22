@@ -32,13 +32,12 @@
   tbody tr{border:1px solid #e4ebe6;border-radius:12px;padding:12px;background:#fff}
   tbody td{border:0;padding:7px 0;white-space:normal;overflow-wrap:anywhere}
   tbody td:first-child{padding-bottom:10px;border-bottom:1px solid #edf1ed}
-  tbody td:nth-child(3),tbody td:nth-child(4),tbody td:nth-child(5),tbody td:nth-child(6),tbody td:nth-child(7){display:flex;align-items:center;justify-content:space-between;gap:12px}
+  tbody td:nth-child(3),tbody td:nth-child(4),tbody td:nth-child(5),tbody td:nth-child(6){display:flex;align-items:center;justify-content:space-between;gap:12px}
   tbody td:nth-child(3)::before{content:"Valor"}
-  tbody td:nth-child(4)::before{content:"Lucro"}
-  tbody td:nth-child(5)::before{content:"Pagamento"}
-  tbody td:nth-child(6)::before{content:"Produção"}
-  tbody td:nth-child(7)::before{content:"Prazo"}
-  tbody td:nth-child(3)::before,tbody td:nth-child(4)::before,tbody td:nth-child(5)::before,tbody td:nth-child(6)::before,tbody td:nth-child(7)::before{color:#7b8981;font-size:12px;font-weight:700}
+  tbody td:nth-child(4)::before{content:"Pagamento"}
+  tbody td:nth-child(5)::before{content:"Produção"}
+  tbody td:nth-child(6)::before{content:"Prazo"}
+  tbody td:nth-child(3)::before,tbody td:nth-child(4)::before,tbody td:nth-child(5)::before,tbody td:nth-child(6)::before{color:#7b8981;font-size:12px;font-weight:700}
   td select{max-width:165px}
   tbody td:last-child{border-top:1px solid #edf1ed;margin-top:4px;padding-top:10px}
   .rowactions{justify-content:flex-end}

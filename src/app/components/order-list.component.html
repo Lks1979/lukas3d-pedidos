@@ -1,0 +1,44 @@
+<section class="panel">
+  <div class="paneltop">
+    <div><h2>Pedidos</h2><p>{{filtrados.length}} pedido(s) encontrado(s)</p></div>
+    <div class="filters">
+      <input aria-label="Buscar pedidos" placeholder="Buscar cliente ou produto..." [(ngModel)]="busca">
+      <select aria-label="Filtrar status" [(ngModel)]="filtro"><option>Todos</option>@for(s of statusList;track s){<option>{{s}}</option>}</select>
+    </div>
+  </div>
+  @if(filtrados.length===0){
+    <div class="empty">
+      <div>▤</div><h3>Nenhum pedido encontrado</h3><p>Cadastre seu primeiro pedido para começar.</p>
+      <button class="primary" (click)="criar.emit()">＋ Cadastrar pedido</button>
+    </div>
+  }@else{
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Pedido / Cliente</th><th>Produto</th><th>Valor</th><th>Pagamento</th><th>Produção</th><th>Prazo</th><th>Ações</th></tr></thead>
+        <tbody>
+          @for(p of filtrados;track p.id){
+            <tr>
+              <td><b>{{p.cliente}}</b><small>{{p.id}}</small></td>
+              <td>{{produtos(p)}}<small>{{itens(p).length}} produto(s)</small></td>
+              <td>{{moeda(total(p))}}</td>
+              <td><span class="pill" [class.paid]="p.pagamento==='Pago'">{{p.pagamento}}</span></td>
+              <td>
+                <select [ngModel]="p.status" (ngModelChange)="statusAlterado.emit({pedido: p, status: $event})">
+                  @for(s of statusList;track s){<option>{{s}}</option>}
+                </select>
+              </td>
+              <td>{{p.prazo || '—'}}</td>
+              <td>
+                <div class="rowactions">
+                  <button title="Editar" (click)="editar.emit(p)">✎</button>
+                  <button title="WhatsApp" (click)="whatsapp.emit(p)">☏</button>
+                  <button title="Excluir" (click)="excluir.emit(p)">✕</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

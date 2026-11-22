@@ -1,0 +1,36 @@
+<div class="overlay" (click)="cancelar.emit()">
+  <section class="dialog" role="dialog" aria-modal="true" aria-label="Formulário de pedido" (click)="$event.stopPropagation()">
+    <div class="dialoghead">
+      <div><p class="eyebrow">LUKAS 3D</p><h2>{{pedido ? 'Editar pedido' : 'Novo pedido'}}</h2></div>
+      <button class="close" (click)="cancelar.emit()" aria-label="Fechar">✕</button>
+    </div>
+    <form (ngSubmit)="enviar()">
+      <div class="fields">
+        <label>Nome do cliente *<input name="cliente" [(ngModel)]="form.cliente" required placeholder="Ex.: Maria Silva"></label>
+        <div class="wide product-list">
+          <div class="product-list-head">
+            <strong>Produtos do pedido</strong>
+            <button type="button" (click)="adicionarProduto()">＋ Adicionar produto</button>
+          </div>
+          @for(item of form.itens;track $index;let i=$index){
+            <fieldset class="product-item">
+              <legend>Produto {{i + 1}}</legend>
+              @if(form.itens.length > 1){<button class="remove-product" type="button" (click)="removerProduto(i)" [attr.aria-label]="'Remover produto ' + (i + 1)">Remover</button>}
+              <div class="product-fields">
+                <label class="wide">Produto *<input [name]="'produto' + i" [(ngModel)]="item.produto" required placeholder="Ex.: Presépio com vela LED"></label>
+                <label>Quantidade<input [name]="'quantidade' + i" type="number" min="1" [(ngModel)]="item.quantidade"></label>
+                <label>Preço unitário (R$)<input [name]="'preco' + i" type="number" min="0" step="0.01" [(ngModel)]="item.preco"></label>
+              </div>
+            </fieldset>
+          }
+        </div>
+        <label>Prazo de entrega<input name="prazo" type="date" [(ngModel)]="form.prazo"></label>
+        <label>Pagamento<select name="pagamento" [(ngModel)]="form.pagamento">@for(s of pagamentos;track s){<option>{{s}}</option>}</select></label>
+      </div>
+      <div class="dialogactions">
+        <button type="button" (click)="cancelar.emit()">Cancelar</button>
+        <button class="primary" type="submit">Salvar pedido</button>
+      </div>
+    </form>
+  </section>
+</div>
