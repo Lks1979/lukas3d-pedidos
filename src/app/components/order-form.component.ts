@@ -7,12 +7,12 @@ interface FormPedido extends Pedido {
 }
 
 function novoItem(): ItemPedido {
-  return { produto: '', quantidade: 1, preco: 0, gramas: 0, horas: 0, custoKg: 100, energia: 0, outros: 0 };
+  return { produto: '', quantidade: 1, preco: 0 };
 }
 
 function novoFormulario(): FormPedido {
   return {
-    id: '', cliente: '', whatsapp: '', ...novoItem(), itens: [novoItem()],
+    id: '', cliente: '', whatsapp: '', produto: '', quantidade: 1, preco: 0, itens: [novoItem()],
     status: 'Recebido', pagamento: 'Pendente', prazo: '', observacoes: '', criadoEm: ''
   };
 }
@@ -34,7 +34,20 @@ export class OrderFormComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['pedido']) {
       this.form = this.pedido
-        ? { ...this.pedido, itens: itensPedido(this.pedido).map(item => ({ ...item })) }
+        ? {
+            id: this.pedido.id,
+            cliente: this.pedido.cliente,
+            whatsapp: this.pedido.whatsapp,
+            produto: this.pedido.produto,
+            quantidade: this.pedido.quantidade,
+            preco: this.pedido.preco,
+            itens: itensPedido(this.pedido),
+            status: this.pedido.status,
+            pagamento: this.pedido.pagamento,
+            prazo: this.pedido.prazo,
+            observacoes: this.pedido.observacoes,
+            criadoEm: this.pedido.criadoEm
+          }
         : novoFormulario();
     }
   }
@@ -50,16 +63,21 @@ export class OrderFormComponent implements OnChanges {
   enviar() {
     if (!this.form.cliente.trim() || !this.form.itens.length || this.form.itens.some(item => !item.produto.trim())) return;
     const itens = this.form.itens.map(item => ({
-      ...item,
       produto: item.produto.trim(),
       quantidade: Math.max(1, Number(item.quantidade) || 1),
-      preco: Math.max(0, Number(item.preco) || 0),
-      gramas: Math.max(0, Number(item.gramas) || 0),
-      horas: Math.max(0, Number(item.horas) || 0),
-      custoKg: Math.max(0, Number(item.custoKg) || 0),
-      energia: Math.max(0, Number(item.energia) || 0),
-      outros: Math.max(0, Number(item.outros) || 0)
+      preco: Math.max(0, Number(item.preco) || 0)
     }));
-    this.salvar.emit({ ...this.form, ...itens[0], itens });
+    this.salvar.emit({
+      id: this.form.id,
+      cliente: this.form.cliente.trim(),
+      whatsapp: this.form.whatsapp,
+      ...itens[0],
+      itens,
+      status: this.form.status,
+      pagamento: this.form.pagamento,
+      prazo: this.form.prazo,
+      observacoes: this.form.observacoes,
+      criadoEm: this.form.criadoEm
+    });
   }
 }

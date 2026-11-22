@@ -5,11 +5,6 @@ export interface ItemPedido {
   produto: string;
   quantidade: number;
   preco: number;
-  gramas: number;
-  horas: number;
-  custoKg: number;
-  energia: number;
-  outros: number;
 }
 
 export interface Pedido {
@@ -19,11 +14,6 @@ export interface Pedido {
   produto: string;
   quantidade: number;
   preco: number;
-  gramas: number;
-  horas: number;
-  custoKg: number;
-  energia: number;
-  outros: number;
   itens?: ItemPedido[];
   status: Status;
   pagamento: Pagamento;
@@ -40,18 +30,14 @@ export const statusPedido: Status[] = [
 export const pagamentosPedido: Pagamento[] = ['Pendente', 'Parcial', 'Pago'];
 
 export function itensPedido(pedido: Pedido): ItemPedido[] {
-  return pedido.itens?.length
+  const itens = pedido.itens?.length
     ? pedido.itens
-    : [{
-        produto: pedido.produto,
-        quantidade: pedido.quantidade,
-        preco: pedido.preco,
-        gramas: pedido.gramas,
-        horas: pedido.horas,
-        custoKg: pedido.custoKg,
-        energia: pedido.energia,
-        outros: pedido.outros
-      }];
+    : [{ produto: pedido.produto, quantidade: pedido.quantidade, preco: pedido.preco }];
+  return itens.map(item => ({
+    produto: item.produto,
+    quantidade: item.quantidade,
+    preco: item.preco
+  }));
 }
 
 export function produtosPedido(pedido: Pedido): string {
