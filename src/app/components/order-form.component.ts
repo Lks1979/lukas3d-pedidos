@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ItemPedido, itensPedido, pagamentosPedido, Pedido } from '../models/pedido';
+import { ItemPedido, itensPedido, pagamentosPedido, Pedido, totalPedido } from '../models/pedido';
 
 interface FormPedido extends Pedido {
   itens: ItemPedido[];
@@ -58,6 +58,14 @@ export class OrderFormComponent implements OnChanges {
 
   removerProduto(indice: number) {
     if (this.form.itens.length > 1) this.form.itens.splice(indice, 1);
+  }
+
+  total(): number {
+    return totalPedido(this.form);
+  }
+
+  moeda(valor: number): string {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
   }
 
   enviar() {

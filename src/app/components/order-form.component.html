@@ -27,6 +27,9 @@
         <label>Prazo de entrega<input name="prazo" type="date" [(ngModel)]="form.prazo"></label>
         <label>Pagamento<select name="pagamento" [(ngModel)]="form.pagamento">@for(s of pagamentos;track s){<option>{{s}}</option>}</select></label>
       </div>
+      <div class="estimate">
+        <span>Valor total do pedido: <b>{{moeda(total())}}</b></span>
+      </div>
       <div class="dialogactions">
         <button type="button" (click)="cancelar.emit()">Cancelar</button>
         <button class="primary" type="submit">Salvar pedido</button>
