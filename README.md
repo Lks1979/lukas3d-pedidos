@@ -32,6 +32,7 @@ O `netlify.toml` define o comando de build e a pasta publicada. Faça um novo de
 
 - Cadastro, edição, exclusão, pesquisa e filtros de pedidos
 - Fluxo de produção, pagamentos, produtos, quantidades e valores
+- Painel financeiro com total vendido, recebido, pendências e saldo a receber
 - Contato com cliente via WhatsApp
 - Exportação e importação de backup JSON
 - Sincronização em tempo real dos pedidos da conta autenticada entre dispositivos
@@ -40,5 +41,7 @@ O `netlify.toml` define o comando de build e a pasta publicada. Faça um novo de
 ## Dados existentes no navegador
 
 Ao entrar, se a conta na nuvem ainda não tiver pedidos, os dados antigos do `localStorage` deste navegador são enviados automaticamente. A cópia local só é removida depois da confirmação do Supabase. Se já houver pedidos na nuvem, os dados locais não são sobrescritos: o app oferece o download de um backup local antes que você decida como importá-lo. A importação de um backup substitui os pedidos atuais da conta.
+
+O valor recebido é armazenado como campo opcional no JSON de cada pedido, sem migração que reescreva os registros existentes. Pedidos “Pago” contam o total como recebido; “Pendente” conta zero; para “Parcial”, informe o valor recebido no formulário. Pedidos parciais antigos sem esse valor são sinalizados para revisão.
 
 Faça backups periódicos. A chave pública do Supabase é visível no app; a proteção dos dados depende das políticas RLS instaladas pelo script SQL. Não desative essas políticas.

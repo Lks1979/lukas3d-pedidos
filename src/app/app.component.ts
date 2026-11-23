@@ -1,16 +1,17 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FinanceStatsComponent } from './components/finance-stats.component';
 import { OrderFormComponent } from './components/order-form.component';
 import { OrderListComponent } from './components/order-list.component';
 import { OrderStatsComponent } from './components/order-stats.component';
-import { isPedido, Pedido, Status, totalPedido, produtosPedido } from './models/pedido';
+import { isPedido, Pedido, Status, totalPedido, produtosPedido, saldoReceberPedido, valorRecebidoPedido } from './models/pedido';
 import { PedidosStore } from './services/pedidos.store';
 import { SupabaseService } from './services/supabase.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [FormsModule, OrderFormComponent, OrderListComponent, OrderStatsComponent],
+  imports: [FormsModule, FinanceStatsComponent, OrderFormComponent, OrderListComponent, OrderStatsComponent],
   templateUrl: './app.component.html'
 })
 export class AppComponent {
@@ -31,9 +32,19 @@ export class AppComponent {
   readonly ativos = computed(() => this.pedidos().filter(p => !['Entregue', 'Cancelado'].includes(p.status)).length);
   readonly imprimindo = computed(() => this.pedidos().filter(p => p.status === 'Imprimindo').length);
   readonly concluidos = computed(() => this.pedidos().filter(p => p.status === 'Entregue').length);
-  readonly faturamento = computed(() => this.pedidos()
-    .filter(p => p.pagamento === 'Pago' && p.status !== 'Cancelado')
+  readonly totalVendido = computed(() => this.pedidos()
+    .filter(pedido => pedido.status !== 'Cancelado')
     .reduce((soma, pedido) => soma + totalPedido(pedido), 0));
+  readonly valoresRecebidos = computed(() => this.pedidos()
+    .reduce((soma, pedido) => soma + valorRecebidoPedido(pedido), 0));
+  readonly pedidosPendentes = computed(() => this.pedidos()
+    .filter(pedido => saldoReceberPedido(pedido) > 0).length);
+  readonly saldoReceber = computed(() => this.pedidos()
+    .reduce((soma, pedido) => soma + saldoReceberPedido(pedido), 0));
+  readonly parciaisSemValor = computed(() => this.pedidos()
+    .filter(pedido => pedido.status !== 'Cancelado'
+      && pedido.pagamento === 'Parcial'
+      && pedido.valorRecebido === undefined).length);
 
   constructor() {
     effect(() => {

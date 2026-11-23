@@ -73,9 +73,16 @@
       <app-order-stats
         [ativos]="ativos()"
         [imprimindo]="imprimindo()"
-        [concluidos]="concluidos()"
-        [faturamento]="faturamento()">
+        [concluidos]="concluidos()">
       </app-order-stats>
+
+      <app-finance-stats
+        [totalVendido]="totalVendido()"
+        [recebido]="valoresRecebidos()"
+        [pendentes]="pedidosPendentes()"
+        [saldoReceber]="saldoReceber()"
+        [parciaisSemValor]="parciaisSemValor()">
+      </app-finance-stats>
 
       @if (store.carregando()) {
         <section class="panel loading">Carregando pedidos...</section>

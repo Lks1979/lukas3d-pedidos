@@ -26,6 +26,9 @@
         </div>
         <label>Prazo de entrega<input name="prazo" type="date" [(ngModel)]="form.prazo"></label>
         <label>Pagamento<select name="pagamento" [(ngModel)]="form.pagamento">@for(s of pagamentos;track s){<option>{{s}}</option>}</select></label>
+        @if(form.pagamento === 'Parcial'){
+          <label>Valor já recebido (R$)<input name="valorRecebido" type="number" min="0" [max]="total()" step="0.01" [(ngModel)]="form.valorRecebido"></label>
+        }
       </div>
       <div class="estimate">
         <span>Valor total do pedido: <b>{{moeda(total())}}</b></span>

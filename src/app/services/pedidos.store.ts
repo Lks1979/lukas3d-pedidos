@@ -211,7 +211,11 @@ function lerPedido(value: Json): Pedido {
     || !pagamentosPedido.includes(value['pagamento'] as Pagamento)
     || typeof value['prazo'] !== 'string'
     || typeof value['observacoes'] !== 'string'
-    || typeof value['criadoEm'] !== 'string') {
+    || typeof value['criadoEm'] !== 'string'
+    || (value['valorRecebido'] !== undefined
+      && (typeof value['valorRecebido'] !== 'number'
+        || !Number.isFinite(value['valorRecebido'])
+        || value['valorRecebido'] < 0))) {
     throw new Error('O Supabase retornou um pedido em formato inválido.');
   }
 
@@ -229,6 +233,7 @@ function lerPedido(value: Json): Pedido {
     quantidade: value['quantidade'],
     preco: value['preco'],
     ...(itensPedido ? { itens: itensPedido } : {}),
+    ...(typeof value['valorRecebido'] === 'number' ? { valorRecebido: value['valorRecebido'] } : {}),
     status: value['status'] as Status,
     pagamento: value['pagamento'] as Pagamento,
     prazo: value['prazo'],
@@ -273,6 +278,7 @@ function serializarPedido(pedido: Pedido): Json {
         preco: item.preco
       }))
     } : {}),
+    ...(pedido.valorRecebido === undefined ? {} : { valorRecebido: pedido.valorRecebido }),
     status: pedido.status,
     pagamento: pedido.pagamento,
     prazo: pedido.prazo,

@@ -77,6 +77,15 @@
 .product-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .remove-product{position:absolute;top:8px;right:10px}
 @media(max-width:520px){.product-fields{grid-template-columns:1fr}.product-fields .wide{grid-column:span 1}}
+.stats.operational{grid-template-columns:repeat(3,1fr)}
+.finance{margin:0 0 27px}
+.finance-heading{margin:0 0 12px}
+.finance-heading h2{margin:0 0 5px;font-size:21px}
+.finance-heading p{margin:0;color:#718078}
+.finance-stats{margin-bottom:0}
+.finance .alert{margin:12px 0 0}
+@media(max-width:850px){.stats.operational{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:380px){.stats.operational{grid-template-columns:1fr}}
 
 .auth-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:#f6f8f6}
 .auth-card{width:min(440px,100%);padding:30px;background:#fff;border:1px solid #e4ebe6;border-radius:16px;box-shadow:0 5px 25px #153b2810}

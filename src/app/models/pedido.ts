@@ -15,6 +15,7 @@ export interface Pedido {
   quantidade: number;
   preco: number;
   itens?: ItemPedido[];
+  valorRecebido?: number;
   status: Status;
   pagamento: Pagamento;
   prazo: string;
@@ -48,6 +49,19 @@ export function totalPedido(pedido: Pedido): number {
   return itensPedido(pedido).reduce((soma, item) => soma + item.preco * item.quantidade, 0);
 }
 
+export function valorRecebidoPedido(pedido: Pedido): number {
+  if (pedido.status === 'Cancelado' || pedido.pagamento === 'Pendente') return 0;
+  const total = totalPedido(pedido);
+  if (pedido.pagamento === 'Pago') return total;
+  return Math.min(total, Math.max(0, pedido.valorRecebido ?? 0));
+}
+
+export function saldoReceberPedido(pedido: Pedido): number {
+  return pedido.status === 'Cancelado'
+    ? 0
+    : Math.max(0, totalPedido(pedido) - valorRecebidoPedido(pedido));
+}
+
 export function isPedido(value: unknown): value is Pedido {
   if (!value || typeof value !== 'object') return false;
   const pedido = value as Partial<Pedido>;
@@ -64,6 +78,8 @@ export function isPedido(value: unknown): value is Pedido {
     && typeof pedido.prazo === 'string'
     && typeof pedido.observacoes === 'string'
     && typeof pedido.criadoEm === 'string'
+    && (pedido.valorRecebido === undefined
+      || (typeof pedido.valorRecebido === 'number' && Number.isFinite(pedido.valorRecebido) && pedido.valorRecebido >= 0))
     && (pedido.itens === undefined || (Array.isArray(pedido.itens) && pedido.itens.every(isItemPedido)));
 }
 

@@ -4,6 +4,7 @@ import { ItemPedido, itensPedido, pagamentosPedido, Pedido, totalPedido } from '
 
 interface FormPedido extends Pedido {
   itens: ItemPedido[];
+  valorRecebido: number;
 }
 
 function novoItem(): ItemPedido {
@@ -12,7 +13,7 @@ function novoItem(): ItemPedido {
 
 function novoFormulario(): FormPedido {
   return {
-    id: '', cliente: '', whatsapp: '', produto: '', quantidade: 1, preco: 0, itens: [novoItem()],
+    id: '', cliente: '', whatsapp: '', produto: '', quantidade: 1, preco: 0, itens: [novoItem()], valorRecebido: 0,
     status: 'Recebido', pagamento: 'Pendente', prazo: '', observacoes: '', criadoEm: ''
   };
 }
@@ -42,6 +43,7 @@ export class OrderFormComponent implements OnChanges {
             quantidade: this.pedido.quantidade,
             preco: this.pedido.preco,
             itens: itensPedido(this.pedido),
+            valorRecebido: this.pedido.pagamento === 'Parcial' ? this.pedido.valorRecebido ?? 0 : 0,
             status: this.pedido.status,
             pagamento: this.pedido.pagamento,
             prazo: this.pedido.prazo,
@@ -75,12 +77,16 @@ export class OrderFormComponent implements OnChanges {
       quantidade: Math.max(1, Number(item.quantidade) || 1),
       preco: Math.max(0, Number(item.preco) || 0)
     }));
+    const total = itens.reduce((soma, item) => soma + item.preco * item.quantidade, 0);
     this.salvar.emit({
       id: this.form.id,
       cliente: this.form.cliente.trim(),
       whatsapp: this.form.whatsapp,
       ...itens[0],
       itens,
+      ...(this.form.pagamento === 'Parcial' ? {
+        valorRecebido: Math.min(total, Math.max(0, Number(this.form.valorRecebido) || 0))
+      } : {}),
       status: this.form.status,
       pagamento: this.form.pagamento,
       prazo: this.form.prazo,
