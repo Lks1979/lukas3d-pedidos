@@ -1,49 +1,104 @@
-<header class="top">
-  <div class="wrap head">
-    <div class="brand">
-      <span class="logo">L<span>3</span></span>
-      <div><strong>LUKAS <em>3D</em></strong><small>CONTROLE DE PEDIDOS</small></div>
+@if (supabase.configError()) {
+  <main class="auth-wrap">
+    <section class="auth-card">
+      <div class="brand"><span class="logo">L<span>3</span></span><div><strong>LUKAS <em>3D</em></strong><small>CONTROLE DE PEDIDOS</small></div></div>
+      <h1>Configure o Supabase</h1>
+      <p>{{supabase.configError()}}</p>
+      <p class="auth-help">Adicione a URL e a chave pública do projeto às variáveis de ambiente do Netlify e faça um novo deploy.</p>
+    </section>
+  </main>
+} @else if (!supabase.session()) {
+  <main class="auth-wrap">
+    <section class="auth-card">
+      <div class="brand"><span class="logo">L<span>3</span></span><div><strong>LUKAS <em>3D</em></strong><small>CONTROLE DE PEDIDOS</small></div></div>
+      <h1>{{modoCadastro() ? 'Criar conta' : 'Entrar'}}</h1>
+      <p>Entre para acessar e sincronizar seus pedidos em todos os dispositivos.</p>
+      @if (authErro()) { <p class="alert error" role="alert">{{authErro()}}</p> }
+      @if (mensagemAuth()) { <p class="alert success" role="status">{{mensagemAuth()}}</p> }
+      <form class="auth-form" (ngSubmit)="autenticar()">
+        <label>E-mail<input name="email" type="email" [ngModel]="email()" (ngModelChange)="email.set($event)" autocomplete="email" required></label>
+        <label>Senha<input name="senha" type="password" [ngModel]="senha()" (ngModelChange)="senha.set($event)" [attr.autocomplete]="modoCadastro() ? 'new-password' : 'current-password'" minlength="6" required></label>
+        <button class="primary" type="submit" [disabled]="authBusy()">{{authBusy() ? 'Aguarde...' : (modoCadastro() ? 'Criar conta' : 'Entrar')}}</button>
+      </form>
+      <button class="text-button" type="button" (click)="alternarModoCadastro()">
+        {{modoCadastro() ? 'Já tem uma conta? Entrar' : 'Ainda não tem conta? Criar conta'}}
+      </button>
+    </section>
+  </main>
+} @else {
+  <header class="top">
+    <div class="wrap head">
+      <div class="brand">
+        <span class="logo">L<span>3</span></span>
+        <div><strong>LUKAS <em>3D</em></strong><small>CONTROLE DE PEDIDOS</small></div>
+      </div>
+      <div class="account">
+        <span>{{supabase.session()?.user?.email}}</span>
+        <button type="button" (click)="sair()">Sair</button>
+        @if (!store.carregando() && !store.migracaoPendente()) { <button class="primary" (click)="novoPedido()">＋ Novo pedido</button> }
+      </div>
     </div>
-    <button class="primary" (click)="novoPedido()">＋ Novo pedido</button>
-  </div>
-</header>
+  </header>
 
-<main class="wrap">
-  <section class="intro">
-    <div>
-      <p class="eyebrow">PAINEL DE PRODUÇÃO</p>
-      <h1>Seus pedidos, em um só lugar.</h1>
-      <p>Organize clientes, impressões, pagamentos e entregas da sua loja 3D.</p>
-    </div>
-    <div class="actions">
-      <button (click)="exportar()">↓ Exportar backup</button>
-      <label class="import">↑ Importar backup<input type="file" accept=".json,application/json" (change)="importar($event)" hidden></label>
-    </div>
-  </section>
+  <main class="wrap">
+    @if (erro() || store.erro()) { <p class="alert error" role="alert">{{erro() || store.erro()}}</p> }
+    @if (store.carregando()) { <p class="alert info" role="status">Sincronizando pedidos...</p> }
+    @if (store.pedidosLegados().length && !store.migracaoPendente()) {
+      <div class="alert warning" role="status">
+        <span>Encontramos pedidos salvos neste navegador que não estão na nuvem. Baixe um backup antes de importar para evitar substituir pedidos existentes.</span>
+        <button type="button" (click)="exportar(store.pedidosLegados())">Baixar backup local</button>
+      </div>
+    }
+    @if (store.migracaoPendente()) {
+      <section class="migration">
+        <h1>Migração dos dados locais</h1>
+        <p>Os pedidos antigos deste navegador ainda não foram sincronizados. Seus dados permanecem neste dispositivo.</p>
+        <button type="button" (click)="exportar(store.pedidosLegados())">Baixar backup local</button>
+      </section>
+    } @else {
+      <section class="intro">
+        <div>
+          <p class="eyebrow">PAINEL DE PRODUÇÃO</p>
+          <h1>Seus pedidos, em um só lugar.</h1>
+          <p>Organize clientes, impressões, pagamentos e entregas da sua loja 3D.</p>
+        </div>
+        @if (!store.carregando()) {
+          <div class="actions">
+            <button (click)="exportar()">↓ Exportar backup</button>
+            <label class="import">↑ Importar backup<input type="file" accept=".json,application/json" (change)="importar($event)" hidden></label>
+          </div>
+        }
+      </section>
 
-  <app-order-stats
-    [ativos]="ativos()"
-    [imprimindo]="imprimindo()"
-    [concluidos]="concluidos()"
-    [faturamento]="faturamento()">
-  </app-order-stats>
+      <app-order-stats
+        [ativos]="ativos()"
+        [imprimindo]="imprimindo()"
+        [concluidos]="concluidos()"
+        [faturamento]="faturamento()">
+      </app-order-stats>
 
-  <app-order-list
-    [pedidos]="pedidos()"
-    (criar)="novoPedido()"
-    (editar)="editarPedido($event)"
-    (excluir)="excluirPedido($event)"
-    (whatsapp)="abrirWhatsApp($event)"
-    (statusAlterado)="atualizarStatus($event.pedido, $event.status)">
-  </app-order-list>
+      @if (store.carregando()) {
+        <section class="panel loading">Carregando pedidos...</section>
+      } @else {
+        <app-order-list
+          [pedidos]="pedidos()"
+          (criar)="novoPedido()"
+          (editar)="editarPedido($event)"
+          (excluir)="excluirPedido($event)"
+          (whatsapp)="abrirWhatsApp($event)"
+          (statusAlterado)="atualizarStatus($event.pedido, $event.status)">
+        </app-order-list>
+      }
 
-  <p class="note">⚠ Os pedidos estão armazenados apenas neste navegador. Faça backups regularmente. Para sincronização e login, será necessário configurar o Supabase.</p>
-</main>
+      <p class="note">Pedidos sincronizados com segurança na nuvem e associados à sua conta.</p>
+    }
+  </main>
 
-@if (pedidoAberto()) {
-  <app-order-form
-    [pedido]="pedidoEditando()"
-    (salvar)="salvarPedido($event)"
-    (cancelar)="fecharFormulario()">
-  </app-order-form>
+  @if (pedidoAberto()) {
+    <app-order-form
+      [pedido]="pedidoEditando()"
+      (salvar)="salvarPedido($event)"
+      (cancelar)="fecharFormulario()">
+    </app-order-form>
+  }
 }

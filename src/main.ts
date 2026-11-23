@@ -1,7 +1,11 @@
+import { inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideZoneChangeDetection } from '@angular/core';
 import { AppComponent } from './app/app.component';
+import { SupabaseService } from './app/services/supabase.service';
 
 bootstrapApplication(AppComponent, {
-  providers: [provideZoneChangeDetection()],
+  providers: [
+    provideZoneChangeDetection(),
+    provideAppInitializer(() => inject(SupabaseService).initialize())
+  ],
 }).catch(console.error);

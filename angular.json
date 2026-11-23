@@ -16,6 +16,12 @@
             "outputPath": "dist/lukas3d-pedidos",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
             "polyfills": [
               "zone.js"
             ],
