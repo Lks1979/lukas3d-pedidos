@@ -1,1 +1,28 @@
-{"name":"lukas3d-pedidos","version":"1.0.0","private":true,"scripts":{"start":"node scripts/write-supabase-config.mjs && ng serve --host 0.0.0.0","build":"node scripts/write-supabase-config.mjs && ng build","test":"ng test"},"dependencies":{"@angular/common":"^20.3.0","@angular/compiler":"^20.3.0","@angular/core":"^20.3.0","@angular/forms":"^20.3.0","@angular/platform-browser":"^20.3.0","@angular/router":"^20.3.0","@supabase/supabase-js":"^2.119.2","rxjs":"~7.8.0","tslib":"^2.8.0","zone.js":"~0.15.0"},"devDependencies":{"@angular/build":"^20.3.0","@angular/cli":"^20.3.0","@angular/compiler-cli":"^20.3.0","typescript":"~5.9.2"}}
+{
+    "name": "lukas3d-pedidos",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "start": "node scripts/write-supabase-config.mjs && ng serve --host 0.0.0.0",
+        "build": "node scripts/write-supabase-config.mjs && ng build",
+        "test": "ng test"
+    },
+    "dependencies": {
+        "@angular/common": "^20.3.0",
+        "@angular/compiler": "^20.3.0",
+        "@angular/core": "^20.3.0",
+        "@angular/forms": "^20.3.0",
+        "@angular/platform-browser": "^20.3.0",
+        "@angular/router": "^20.3.0",
+        "@supabase/supabase-js": "^2.119.2",
+        "rxjs": "~7.8.0",
+        "tslib": "^2.8.0",
+        "zone.js": "~0.15.0"
+    },
+    "devDependencies": {
+        "@angular/build": "^20.3.0",
+        "@angular/cli": "^20.3.0",
+        "@angular/compiler-cli": "^20.3.0",
+        "typescript": "~5.9.2"
+    }
+}
