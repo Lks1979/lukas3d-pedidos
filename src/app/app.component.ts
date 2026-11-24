@@ -112,7 +112,7 @@ export class AppComponent {
       pedido.id = 'PD-' + Date.now().toString(36).toUpperCase();
       pedido.criadoEm = new Date().toISOString();
       if (await this.executarOperacao(() => this.store.adicionar(pedido))) this.fecharFormulario();
-    } else if (await this.executarOperacao(() => this.store.atualizar(pedido))) {
+    } else if (await this.executarOperacao(() => this.store.editarPedido(pedido))) {
       this.fecharFormulario();
     }
   }

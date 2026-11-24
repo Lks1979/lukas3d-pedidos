@@ -94,6 +94,12 @@ export class PedidosStore {
     }
   }
 
+  async editarPedido(pedido: Pedido): Promise<void> {
+    if (!pedido.id) throw new Error('Informe um pedido válido para editar.');
+    if (!isPedido(pedido)) throw new Error('Os dados do pedido são inválidos.');
+    await this.atualizar(pedido);
+  }
+
   async excluir(id: string): Promise<void> {
     const userId = this.usuarioAtual();
     const { error } = await this.supabase.client.from('pedidos')
